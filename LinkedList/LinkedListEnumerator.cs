@@ -4,16 +4,17 @@ namespace LinkedList;
 
 public class LinkedListEnumerator<T> : IEnumerator<Node<T>>
 {
-    private Node<T> _current; 
+    private Node<T> _dll;
+    private Node<T> _current;
     public LinkedListEnumerator(Node<T> head)
     {
-        _current = head;
+        _dll = head;
     }
     public bool MoveNext()
     {
-        Current = _current;
-        if (Current == null) return false;
-        _current = Current.Next;
+        _current = _dll;
+        if (_current == null) return false;
+        _dll = _dll.Next;
         return true;
 
     }
@@ -22,8 +23,8 @@ public class LinkedListEnumerator<T> : IEnumerator<Node<T>>
     {
     }
 
-    public Node<T> Current { get; set; }
-    
+    public Node<T> Current => _current;
+
     object IEnumerator.Current => Current;
 
     public void Dispose()
