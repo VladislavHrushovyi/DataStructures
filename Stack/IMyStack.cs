@@ -2,7 +2,7 @@
 
 public interface IMyStack<T>
 {
-    public void Pop();
+    public T Pop();
     public void Push(T data);
     public T Peek();
     public bool IsEmpty();

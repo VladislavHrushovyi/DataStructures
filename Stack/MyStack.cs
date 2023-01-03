@@ -6,9 +6,15 @@ namespace Stack;
 public class MyStack<T> : IEnumerable<StackNode<T>>, IMyStack<T>
 {
     private StackNode<T> _top;
+    private int _count;
     public StackNode<T> Top
     {
         get => _top;
+    }
+
+    public int Count
+    {
+        get => _count;
     }
 
     public IEnumerator<StackNode<T>> GetEnumerator()
@@ -21,14 +27,18 @@ public class MyStack<T> : IEnumerable<StackNode<T>>, IMyStack<T>
         return GetEnumerator();
     }
 
-    public void Pop()
+    public T Pop()
     {
         if (IsEmpty())
         {
             throw new Exception("Stack is empty");
         }
 
+        var itemObjData = _top.Data;
         _top = _top.Next;
+        _count--;
+
+        return itemObjData;
     }
 
     public void Push(T data)
@@ -39,6 +49,7 @@ public class MyStack<T> : IEnumerable<StackNode<T>>, IMyStack<T>
         };
 
         _top = node;
+        _count++;
     }
 
     public T Peek()
@@ -47,10 +58,8 @@ public class MyStack<T> : IEnumerable<StackNode<T>>, IMyStack<T>
         {
             return _top.Data;
         }
-        else
-        {
-            throw new Exception("Stack is empty");
-        }
+
+        throw new Exception("Stack is empty");
     }
 
     public bool IsEmpty()
