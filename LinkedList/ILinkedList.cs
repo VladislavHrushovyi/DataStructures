@@ -7,4 +7,5 @@ public interface ILinkedList<T>
     public void InsertBefore(Node<T> node, T value);
     public void InsertAfter(Node<T> node, T value);
     public void RemoveNode(Node<T> node);
+    public void Display();
 }
