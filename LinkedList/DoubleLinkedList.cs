@@ -2,7 +2,7 @@
 
 namespace LinkedList;
 
-public class DoubleLinkedList<T> : ILinkedList<T>, IEnumerable<Node<T>>
+public class DoubleLinkedList<T> : ILinkedList<T>, IEnumerable<Node<T>>, ICloneable
 {
     public Node<T>? Head;
     public Node<T>? Last => GetLast();
@@ -15,7 +15,7 @@ public class DoubleLinkedList<T> : ILinkedList<T>, IEnumerable<Node<T>>
 
     private Node<T> GetNodeByIndex(int index)
     {
-        if (index < 0 || index > Length - 1)
+        if (index < 0 || index > Length)
         {
             throw new Exception("Index out of range");
         }
@@ -77,8 +77,7 @@ public class DoubleLinkedList<T> : ILinkedList<T>, IEnumerable<Node<T>>
 
         if (Head == null)
         {
-            newNode.Prev = null;
-            Head = newNode;
+            Push(value);
             return;
         }
 
@@ -168,6 +167,14 @@ public class DoubleLinkedList<T> : ILinkedList<T>, IEnumerable<Node<T>>
         Length--;
     }
 
+    public void Display()
+    {
+        foreach (var item in this)
+        {
+            Console.WriteLine(item.Value);
+        }
+    }
+
     public IEnumerator<Node<T>> GetEnumerator()
     {
         return new LinkedListEnumerator<T>(Head);
@@ -176,5 +183,10 @@ public class DoubleLinkedList<T> : ILinkedList<T>, IEnumerable<Node<T>>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
+    }
+
+    public object Clone()
+    {
+        return MemberwiseClone();
     }
 }
