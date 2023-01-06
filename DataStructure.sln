@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkedList", "LinkedList\Li
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stack", "Stack\Stack.csproj", "{17469207-3A32-40C0-91C1-0CAC2F1777AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recursion", "Recursion\Recursion.csproj", "{1D7AB062-D792-4D7B-994A-A74C8E924D55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SortMethods", "SortMethods\SortMethods.csproj", "{11B54600-AF18-461E-8650-9E1025033143}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{17469207-3A32-40C0-91C1-0CAC2F1777AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17469207-3A32-40C0-91C1-0CAC2F1777AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17469207-3A32-40C0-91C1-0CAC2F1777AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D7AB062-D792-4D7B-994A-A74C8E924D55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D7AB062-D792-4D7B-994A-A74C8E924D55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D7AB062-D792-4D7B-994A-A74C8E924D55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D7AB062-D792-4D7B-994A-A74C8E924D55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11B54600-AF18-461E-8650-9E1025033143}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11B54600-AF18-461E-8650-9E1025033143}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11B54600-AF18-461E-8650-9E1025033143}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11B54600-AF18-461E-8650-9E1025033143}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
