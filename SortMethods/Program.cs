@@ -6,5 +6,6 @@ Console.WriteLine("##########################################");
 //sDll.BubbleSort();
 //sDll.InsertionSort();
 //sDll.SelectionSort();
-sDll.MergeSort();
+//sDll.MergeSort();
+sDll.QuickSort();
 sDll.Display();

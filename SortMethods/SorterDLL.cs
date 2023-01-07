@@ -1,4 +1,5 @@
-﻿using LinkedList;
+﻿using System.Collections.Concurrent;
+using LinkedList;
 
 namespace SortMethods;
 
@@ -130,6 +131,41 @@ public class SorterDll : DoubleLinkedList<int>, ISortable
         {
             dll[k++].Value = rightTempDll[j++].Value;
         }
+    }
+
+    public void QuickSort()
+    {
+        ExecuteQuickSort(this, 0, Length - 1);
+    }
+
+    private void ExecuteQuickSort(DoubleLinkedList<int> dll, int low, int high)
+    {
+        if (low < high)
+        {
+            var pi = Partition(dll, low, high);
+            
+            ExecuteQuickSort(dll, low, pi - 1);
+            ExecuteQuickSort(dll, pi + 1, high);
+        }
+    }
+
+    private int Partition(DoubleLinkedList<int> dll, int low, int high)
+    {
+        var pivot = dll[high];
+        var i = low - 1;
+
+        for (int j = low; j <= high - 1; j++)
+        {
+            if (dll[j].Value < pivot.Value)
+            {
+                i++;
+                SwapNode(dll[i], dll[j]);
+            }
+        }
+        
+        SwapNode(dll[i + 1], dll[high]);
+
+        return ++i;
     }
 
     private void SwapNode(Node<int> node1, Node<int> node2)
