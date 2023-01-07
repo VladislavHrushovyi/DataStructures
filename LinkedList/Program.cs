@@ -9,8 +9,9 @@ dll.Push(4);
 dll.Append(77);
 dll.InsertBefore(dll[0], 11);
 dll.InsertAfter(dll[0], 22);
+dll.Display();
 dll.RemoveNode(dll[^2]);
-
+Console.WriteLine("####################################");
 for (int i = 0; i < dll.Length; i++)
 {
     Console.WriteLine(dll[i].Value);
