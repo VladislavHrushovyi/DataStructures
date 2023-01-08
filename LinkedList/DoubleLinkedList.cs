@@ -175,6 +175,26 @@ public class DoubleLinkedList<T> : ILinkedList<T>, IEnumerable<Node<T>>, IClonea
         }
     }
 
+    public Node<T> FindNode(Node<T> node)
+    {
+        return BinarySearch(this, 0, Length - 1, node);
+    }
+
+    private Node<T> BinarySearch(DoubleLinkedList<T> dll, int left, int right, Node<T> node)
+    {
+        if (left <= right)
+        {
+            var mid = left + (right - left) / 2;
+            if (dll[mid].Equals(node)) return this[mid];
+
+            if (dll[mid] > node) return BinarySearch(dll, left, mid - 1, node);
+
+            return BinarySearch(dll, mid + 1, right, node);
+        }
+
+        return null;
+    }
+    
     public IEnumerator<Node<T>> GetEnumerator()
     {
         return new LinkedListEnumerator<T>(Head);

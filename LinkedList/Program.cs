@@ -25,3 +25,13 @@ foreach (var node in dll)
 }
 
 Console.WriteLine($"Length --> {dll.Length}");
+
+var findNode = dll.FindNode(dll[^1]);
+if (findNode != null)
+{
+    Console.WriteLine($"Find element is {findNode.Value}");
+}
+else
+{
+    Console.WriteLine("Node does`nt contains in list");
+}

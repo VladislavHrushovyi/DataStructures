@@ -27,6 +27,6 @@ Algorithm
   - [x] Selection sort
   - [x] Merge sort
   - [x] Quick sort
-- [ ] Binary search
+- [x] Binary search
 - [x] Recursion
 - [ ] Greedy algorithm

@@ -8,4 +8,5 @@ public interface ILinkedList<T>
     public void InsertAfter(Node<T> node, T value);
     public void RemoveNode(Node<T> node);
     public void Display();
+    public Node<T> FindNode(Node<T> node);
 }
