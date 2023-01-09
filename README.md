@@ -10,10 +10,11 @@ Data structures
     - [x] Implement main methods Pop/Push/Peek
     - [x] Create Queue using stack
 - [ ] Trees
-  - [ ] Realize classic tree
-  - [ ] Realize binary tree
+  - [x] Realize classic tree
+  - [x] Realize binary tree
   - [ ] Realize black-red tree
-  - [ ] Realize main methods
+  - [x] Realize main methods
+  - [ ] Find k-th element
 - [ ] Hash function
 - [ ] Hash table
 - [ ] Graph
