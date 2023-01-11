@@ -1,11 +1,14 @@
 ﻿using Tree;
 
-ITree<int> myTree = new BinaryTree<int>();
+BinaryTree<int> myTree = new BinaryTree<int>();
 
 for (int i = 0; i < 10; i++)
 {
     myTree.Insert(new Random().Next(1,100));
 }
+
+Console.WriteLine("Tree depth is:");
+Console.WriteLine(myTree.GetTreeDepth());
 
 Console.WriteLine("My tree pre order:");
 myTree.TraversePreOrder();
@@ -28,3 +31,8 @@ else
 
 Console.WriteLine();
 myTree.TraverseInOrder();
+Console.WriteLine();
+
+int key = 1;
+Console.WriteLine($"Tree node by index {key}");
+Console.WriteLine(myTree[key].Data);

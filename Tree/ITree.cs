@@ -8,4 +8,5 @@ public interface ITree<T>
     public void TraversePostOrder();
     public void RemoveNode(T value);
     public bool Contain(T value);
+    public int GetTreeDepth();
 }

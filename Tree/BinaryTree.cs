@@ -6,6 +6,41 @@ public class BinaryTree<T> : ITree<T> where T : INumber<T>
 {
     private TreeNode<T> _root;
 
+    public TreeNode<T> this[int index]
+    {
+        get => GetNodeByIndex(index);
+    }
+
+    private TreeNode<T> GetNodeByIndex(int index)
+    {
+        _counter = 0;
+        return FindNodeByIndex(index, _root);
+    }
+
+    private int _counter;
+    private TreeNode<T> FindNodeByIndex(int index, TreeNode<T> root)
+    {
+        if (root == null)
+        {
+            return null;
+        }
+        
+        var leftNode = FindNodeByIndex(index, root.Left);
+
+        if (leftNode != null)
+        {
+            return leftNode;
+        }
+
+        _counter++;
+        if (index == _counter)
+        {
+            return root;
+        }
+
+        return FindNodeByIndex(index, root.Right);
+    }
+
     private TreeNode<T> ExecuteInsert(T data, TreeNode<T>? root)
     {
         if (root == null)
@@ -72,6 +107,16 @@ public class BinaryTree<T> : ITree<T> where T : INumber<T>
     public bool Contain(T value)
     {
         return ExecuteContain(value, _root);
+    }
+
+    public int GetTreeDepth()
+    {
+        return ExecuteGetTreeDepth(_root);
+    }
+
+    private int ExecuteGetTreeDepth(TreeNode<T> root)
+    {
+        return root == null ? 0 : Math.Max(ExecuteGetTreeDepth(root.Left), ExecuteGetTreeDepth(root.Right)) + 1;
     }
 
     private bool ExecuteContain(T value, TreeNode<T> root)
