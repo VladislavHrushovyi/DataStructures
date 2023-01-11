@@ -14,7 +14,8 @@ Data structures
   - [x] Realize binary tree
   - [ ] Realize black-red tree
   - [x] Realize main methods
-  - [ ] Find k-th element
+  - [x] Find k-th element
+  - [x] Calculate Tree depth
 - [ ] Hash function
 - [ ] Hash table
 - [ ] Graph
