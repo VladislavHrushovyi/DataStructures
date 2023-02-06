@@ -9,7 +9,7 @@ Data structures
     - [x] Implement stack applying single linked list
     - [x] Implement main methods Pop/Push/Peek
     - [x] Create Queue using stack
-- [ ] Trees
+- [x] Trees
   - [x] Realize classic tree
   - [x] Realize binary tree
   - [x] Realize black-red tree
