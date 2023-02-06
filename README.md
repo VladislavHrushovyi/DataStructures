@@ -12,7 +12,7 @@ Data structures
 - [ ] Trees
   - [x] Realize classic tree
   - [x] Realize binary tree
-  - [ ] Realize black-red tree
+  - [x] Realize black-red tree
   - [x] Realize main methods
   - [x] Find k-th element
   - [x] Calculate Tree depth
