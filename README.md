@@ -10,8 +10,8 @@ Data structures
     - [x] Implement main methods Pop/Push/Peek
     - [x] Create Queue using stack
 - [x] Trees
-  - [x] Realize classic tree
   - [x] Realize binary tree
+  - [ ] AVL tree
   - [x] Realize black-red tree
   - [x] Realize main methods
   - [x] Find k-th element
