@@ -9,4 +9,5 @@ public interface ITree<T>
     public void RemoveNode(T value);
     public bool Contain(T value);
     public int GetTreeDepth();
+    public Node<T> Find(T key);
 }

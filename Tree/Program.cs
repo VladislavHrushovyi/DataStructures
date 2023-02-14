@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Tree;
+﻿using Tree;
 
 // BinaryTree<int> myTree = new BinaryTree<int>();
 //
@@ -38,8 +37,9 @@ using Tree;
 // Console.WriteLine($"Tree node by index {key}");
 // Console.WriteLine(myTree[key].Data);
 
-var rbTree = new RbTree();
-var values = Enumerable.Range(1,20).Select(_ => new Random().Next(1, 100));
+var rbTree = new RbTree<int>();
+var values = Enumerable.Range(1,15).Select(_ => new Random().Next(1, 1000));
+
 // for (int i = 0; i < 20; i++)
 // {
 //     rbTree.Insert(new Random().Next(100));
@@ -50,9 +50,10 @@ foreach (var v in values)
     rbTree.Insert(v);
 }
 
-rbTree.Display();
+rbTree.TraverseInOrder();
 
 Console.WriteLine("Enter the delete value");
 var value = Int32.Parse(Console.ReadLine());
-rbTree.Delete(value);
-rbTree.Display();
+rbTree.RemoveNode(value);
+rbTree.TraverseInOrder();
+Console.WriteLine($"Depth is {rbTree.GetTreeDepth()}");

@@ -2,29 +2,30 @@
 
 namespace Tree;
 
-public class BinaryTree<T> : ITree<T> where T : INumber<T>
+public class BinaryTree<T> : ITree<T> where T : IComparable
 {
-    private TreeNode<T> _root;
+    protected Node<T> _root;
 
-    public TreeNode<T> this[int index]
+    public Node<T> this[int index]
     {
         get => GetNodeByIndex(index);
     }
 
-    private TreeNode<T> GetNodeByIndex(int index)
+    protected Node<T> GetNodeByIndex(int index)
     {
         _counter = 0;
         return FindNodeByIndex(index, _root);
     }
 
     private int _counter;
-    private TreeNode<T> FindNodeByIndex(int index, TreeNode<T> root)
+
+    protected Node<T> FindNodeByIndex(int index, Node<T> root)
     {
         if (root == null)
         {
             return null;
         }
-        
+
         var leftNode = FindNodeByIndex(index, root.Left);
 
         if (leftNode != null)
@@ -41,13 +42,13 @@ public class BinaryTree<T> : ITree<T> where T : INumber<T>
         return FindNodeByIndex(index, root.Right);
     }
 
-    private TreeNode<T> ExecuteInsert(T data, TreeNode<T>? root)
+    protected Node<T> ExecuteInsert(T data, Node<T>? root)
     {
         if (root == null)
         {
-            root = new TreeNode<T>(data);
+            root = new Node<T>(data);
         }
-        else if (data < root.Data)
+        else if (data.CompareTo(root.Data) < 0)
         {
             root.Left = ExecuteInsert(data, root.Left);
         }
@@ -66,10 +67,10 @@ public class BinaryTree<T> : ITree<T> where T : INumber<T>
 
     public void TraversePreOrder()
     {
-            ExecuteTraversePreOrder(_root);
+        ExecuteTraversePreOrder(_root);
     }
 
-    private void ExecuteTraversePreOrder(TreeNode<T> root)
+    protected void ExecuteTraversePreOrder(Node<T> root)
     {
         if (root != null)
         {
@@ -84,7 +85,7 @@ public class BinaryTree<T> : ITree<T> where T : INumber<T>
         ExecuteTraverseInOrder(_root);
     }
 
-    private void ExecuteTraverseInOrder(TreeNode<T> root)
+    private void ExecuteTraverseInOrder(Node<T> root)
     {
         if (root != null)
         {
@@ -100,7 +101,7 @@ public class BinaryTree<T> : ITree<T> where T : INumber<T>
     }
 
     public void RemoveNode(T value)
-    { 
+    {
         ExecuteRemove(value, _root);
     }
 
@@ -114,32 +115,53 @@ public class BinaryTree<T> : ITree<T> where T : INumber<T>
         return ExecuteGetTreeDepth(_root);
     }
 
-    private int ExecuteGetTreeDepth(TreeNode<T> root)
+    public Node<T> Find(T key)
+    {
+        Node<T> iterNode = _root;
+        while (iterNode != null)
+        {
+            if (iterNode.Data.CompareTo(key) == 0)
+                return iterNode;
+            if (iterNode.Data.CompareTo(key) > 0)
+                iterNode = iterNode.Left;
+            else
+                iterNode = iterNode.Right;
+        }
+
+        if (iterNode is null )
+        {
+            throw new Exception($"Tree doesnt contain node by key {key}");
+        }
+
+        return iterNode;
+    }
+
+    protected int ExecuteGetTreeDepth(Node<T> root)
     {
         return root == null ? 0 : Math.Max(ExecuteGetTreeDepth(root.Left), ExecuteGetTreeDepth(root.Right)) + 1;
     }
 
-    private bool ExecuteContain(T value, TreeNode<T> root)
+    protected bool ExecuteContain(T value, Node<T> root)
     {
         if (root != null)
         {
-            if (root.Data == value) return true;
-            else if (value < root.Data) return ExecuteContain(value, root.Left);
-            else if (value > root.Data) return ExecuteContain(value, root.Right);
+            if (root.Data.CompareTo(value) == 0) return true;
+            else if (value.CompareTo(root.Data) < 0) return ExecuteContain(value, root.Left);
+            else if (value.CompareTo(root.Data) > 0) return ExecuteContain(value, root.Right);
         }
 
         return false;
     }
 
-    private TreeNode<T> ExecuteRemove(T value, TreeNode<T> root)
+    protected Node<T> ExecuteRemove(IComparable value, Node<T> root)
     {
         if (root != null)
         {
-            if (value < root.Data)
+            if (value.CompareTo(root.Data) < 0)
             {
                 root.Left = ExecuteRemove(value, root.Left);
             }
-            else if (value > root.Data)
+            else if (value.CompareTo(root.Data) > 0)
             {
                 root.Right = ExecuteRemove(value, root.Right);
             }
@@ -167,7 +189,7 @@ public class BinaryTree<T> : ITree<T> where T : INumber<T>
         return root;
     }
 
-    private TreeNode<T> FindMax(TreeNode<T> node)
+    protected Node<T> FindMax(Node<T> node)
     {
         while (node.Left != null)
         {
@@ -176,8 +198,21 @@ public class BinaryTree<T> : ITree<T> where T : INumber<T>
 
         return node;
     }
+    
+    protected Node<T> FindMin(Node<T> X)
+    {
+        while (X.Left.Left != null)
+        {
+            X = X.Left;
+        }
+        if (X.Left.Right != null)
+        {
+            X = X.Left.Right;
+        }
+        return X;
+    }
 
-    private void ExecuteTraversePostOrder(TreeNode<T> root)
+    protected void ExecuteTraversePostOrder(Node<T> root)
     {
         if (root != null)
         {

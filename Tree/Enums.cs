@@ -2,6 +2,6 @@
 
 public enum NodeColor
 {
-    Red = 1,
-    Black = 0
+    Red = 0,
+    Black = 1
 }

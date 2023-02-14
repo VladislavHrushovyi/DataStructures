@@ -1,223 +1,174 @@
-﻿using System.Numerics;
+﻿namespace Tree;
 
-namespace Tree;
-
-public class RbTree
+public class RbTree<T> : BinaryTree<T> where T : IComparable
 {
-    private RbNode _root;
-    private RbNode _TNULL;
+    Node<T> NIL;
 
     public RbTree()
     {
-        _TNULL = new RbNode(null);
-        _TNULL.Color = NodeColor.Black;
-        _TNULL.Left = null;
-        _TNULL.Right = null;
-        _root = _TNULL;
+        Node<T> nilNode = new Node<T>(null);
+        nilNode.Color = NodeColor.Black;
+        NIL = nilNode;
+        _root = NIL;
     }
 
-    public void Insert(INumber<int> data)
+    public new void Insert(T data)
     {
-        RbNode newNode = new RbNode(data);
-        newNode.Parent = null;
-        newNode.Data = data;
-        newNode.Left = _TNULL;
-        newNode.Right = _TNULL;
-        newNode.Color = NodeColor.Red;
+        Node<T> z = new Node<T>(data);
+        Node<T> y = NIL;
+        Node<T> temp = _root;
 
-        RbNode y = null;
-        RbNode x = this._root;
-
-        while (x != _TNULL)
+        while (temp != NIL)
         {
-            y = x;
-            if (newNode.Data.CompareTo(x.Data) < 0)
-            {
-                x = x.Left;
-            }
-            else
-            {
-                x = x.Right;
-            }
+            y = temp;
+            temp = z.Data.CompareTo(temp.Data) < 0 ? temp.Left : temp.Right;
         }
 
-        newNode.Parent = y;
-        if (y == null)
+        z.Parent = y;
+
+        if (y == NIL)
         {
-            _root = newNode;
+            _root = z;
         }
-        else if (newNode.Data.CompareTo(y.Data) < 0)
-        {
-            y.Left = newNode;
-        }
+        else if (z.Data.CompareTo(y.Data) < 0)
+            y.Left = z;
         else
-        {
-            y.Right = newNode;
-        }
+            y.Right = z;
 
-        if (newNode.Parent == null)
-        {
-            newNode.Color = NodeColor.Black;
-            return;
-        }
+        z.Right = NIL;
+        z.Left = NIL;
 
-        if (newNode.Parent.Parent == null)
-        {
-            return;
-        }
-
-        FixInsert(newNode);
+        InsertFixup(z);
     }
 
-    private void FixInsert(RbNode newNode)
+    private void InsertFixup(Node<T> z)
     {
-        RbNode u;
-        while (newNode.Parent.Color == NodeColor.Red)
+        while (z.Parent.Color == NodeColor.Red)
         {
-            if (newNode.Parent == newNode.Parent.Parent.Right)
+            if (z.Parent == z.Parent.Parent.Left)
             {
-                u = newNode.Parent.Parent.Left;
-                if (u.Color == NodeColor.Red)
+                Node<T> y = z.Parent.Parent.Right;
+
+                if (y.Color == NodeColor.Red)
                 {
-                    u.Color = NodeColor.Black;
-                    newNode.Parent.Color = NodeColor.Black;
-                    newNode.Parent.Parent.Color = NodeColor.Red;
-                    newNode = newNode.Parent.Parent;
+                    z.Parent.Color = NodeColor.Black;
+                    y.Color = NodeColor.Black;
+                    z.Parent.Parent.Color = NodeColor.Red;
+                    z = z.Parent.Parent;
                 }
                 else
                 {
-                    if (newNode == newNode.Parent.Left)
+                    if (z == z.Parent.Right)
                     {
-                        newNode = newNode.Parent;
-                        RightRotate(newNode);
+                        z = z.Parent;
+                        LeftRotate(z);
                     }
 
-                    newNode.Parent.Color = NodeColor.Black;
-                    newNode.Parent.Parent.Color = NodeColor.Red;
-                    LeftRotate(newNode.Parent.Parent);
+                    z.Parent.Color = NodeColor.Black;
+                    z.Parent.Parent.Color = NodeColor.Red;
+                    RightRotate(z.Parent.Parent);
                 }
             }
             else
             {
-                u = newNode.Parent.Parent.Right;
+                Node<T> y = z.Parent.Parent.Left;
 
-                if (u.Color == NodeColor.Red)
+                if (y.Color == NodeColor.Red)
                 {
-                    u.Color = NodeColor.Black;
-                    newNode.Parent.Color = NodeColor.Black;
-                    newNode.Parent.Parent.Color = NodeColor.Red;
-                    newNode = newNode.Parent.Parent;
+                    z.Parent.Color = NodeColor.Black;
+                    y.Color = NodeColor.Black;
+                    z.Parent.Parent.Color = NodeColor.Red;
+                    z = z.Parent.Parent;
                 }
                 else
                 {
-                    if (newNode == newNode.Parent.Right)
+                    if (z == z.Parent.Left)
                     {
-                        newNode = newNode.Parent;
-                        LeftRotate(newNode);
+                        z = z.Parent;
+                        RightRotate(z);
                     }
 
-                    newNode.Parent.Color = NodeColor.Black;
-                    newNode.Parent.Parent.Color = NodeColor.Red;
-                    RightRotate(newNode.Parent.Parent);
+                    z.Parent.Color = NodeColor.Black;
+                    z.Parent.Parent.Color = NodeColor.Red;
+                    LeftRotate(z.Parent.Parent);
                 }
             }
-
-            if (newNode == _root) break;
         }
 
         _root.Color = NodeColor.Black;
     }
 
-    public void Delete(INumber<int> data)
+    public new void RemoveNode(T data)
     {
-        DeleteHelper(_root, data);
-    }
+        Node<T> item = Find(data);
+        Node<T> X = null;
+        Node<T> Y = null;
 
-    private void DeleteHelper(RbNode root, INumber<int> key)
-    {
-        RbNode z = _TNULL;
-        RbNode x, y;
-
-        while (root != _TNULL)
+        if (item.Left == null || item.Right == null)
         {
-            if (root.Data.CompareTo(key) == 0)
-            {
-                z = root;
-            }
-
-            root = root.Data.CompareTo(key) > 0 ? root.Left : root.Right;
-        }
-
-        if (z == _TNULL)
-        {
-            throw new ArgumentException($"Tree doesn`t contains the key: {key}");
-        }
-
-        y = z;
-        int yOriginalColor = (int) y.Color;
-        if (z.Left == _TNULL)
-        {
-            x = z.Right;
-            RbTransplant(z, z.Right);
-        }
-        else if (z.Right == _TNULL)
-        {
-            x = z.Left;
-            RbTransplant(z, z.Left);
+            Y = item;
         }
         else
         {
-            y = Minimum(z.Right);
-            yOriginalColor = (int) y.Color;
-            x = y.Right;
-            if (y.Parent == z)
-            {
-                x.Parent = z;
-            }
-            else
-            {
-                RbTransplant(y, y.Right);
-                y.Right = z.Right;
-                y.Right.Parent = y;
-            }
-
-            RbTransplant(y, z);
-            y.Left = z.Left;
-            y.Left.Parent = y;
-            y.Color = z.Color;
+            Y = TreeSuccessor(item);
         }
 
-        if (yOriginalColor == (int) NodeColor.Black)
+        if (Y.Left != null)
         {
-            FixDelete(x);
+            X = Y.Left;
+        }
+        else
+        {
+            X = Y.Right;
+        }
+
+        if (X != null)
+        {
+            X.Parent = Y;
+        }
+
+        if (Y.Parent == null)
+        {
+            _root = X;
+        }
+        else if (Y == Y.Parent.Left)
+        {
+            Y.Parent.Left = X;
+        }
+        else
+        {
+            Y.Parent.Left = X;
+        }
+
+        if (Y != item)
+        {
+            item.Data = Y.Data;
+        }
+
+        if (Y.Color == NodeColor.Black)
+        {
+            DeleteFixUp(X);
         }
     }
 
-    private void FixDelete(RbNode x)
+    private void DeleteFixUp(Node<T> x)
     {
-        RbNode s;
-        while (x != _root && x.Color == NodeColor.Black)
-        {
-            if (x == x.Parent.Left)
-            {
-                s = x.Parent.Left;
-                if (s.Color == NodeColor.Red)
-                {
+        Node<T> s;
+        while (x != _root && x.Color == NodeColor.Black) {
+            if (x == x.Parent.Left) {
+                s = x.Parent.Right;
+                if (s.Color == NodeColor.Red) {
                     s.Color = NodeColor.Black;
                     x.Parent.Color = NodeColor.Red;
                     LeftRotate(x.Parent);
                     s = x.Parent.Right;
                 }
 
-                if (s.Left.Color == NodeColor.Black && s.Right.Color == NodeColor.Black)
-                {
+                if (s.Left.Color == NodeColor.Black && s.Right.Color == NodeColor.Black) {
                     s.Color = NodeColor.Red;
                     x = x.Parent;
-                }
-                else
-                {
-                    if (s.Right.Color == NodeColor.Black)
-                    {
+                } else {
+                    if (s.Right.Color == NodeColor.Black) {
                         s.Left.Color = NodeColor.Black;
                         s.Color = NodeColor.Red;
                         RightRotate(s);
@@ -230,18 +181,20 @@ public class RbTree
                     LeftRotate(x.Parent);
                     x = _root;
                 }
-            }
-            else
-            {
+            } else {
                 s = x.Parent.Left;
-                if (s.Color == NodeColor.Red)
-                {
+                if (s.Color == NodeColor.Red) {
                     s.Color = NodeColor.Black;
+                    x.Parent.Color = NodeColor.Red;
+                    RightRotate(x.Parent);
+                    s = x.Parent.Left;
                 }
-                else
-                {
-                    if (s.Left.Color == NodeColor.Black)
-                    {
+
+                if (s.Right.Color == NodeColor.Black && s.Right.Color == NodeColor.Black) {
+                    s.Color = NodeColor.Red;
+                    x = x.Parent;
+                } else {
+                    if (s.Left.Color == NodeColor.Black) {
                         s.Right.Color = NodeColor.Black;
                         s.Color = NodeColor.Red;
                         LeftRotate(s);
@@ -256,106 +209,77 @@ public class RbTree
                 }
             }
         }
-
-        x.Color = NodeColor.Black;
+        x.Color = 0;
     }
 
-    public RbNode Minimum(RbNode node)
+    private void LeftRotate(Node<T> x)
     {
-        while (node.Left != _TNULL)
+        Node<T> y = x.Right;
+        x.Right = y.Left;
+        if (y.Left != NIL)
         {
-            node = node.Left;
+            y.Left.Parent = x;
         }
 
-        return node;
-    }
-
-    private void RbTransplant(RbNode u, RbNode v)
-    {
-        if (u.Parent == null)
-        {
-            _root = v;
-        }
-        else if (u == u.Parent.Left)
-        {
-            u.Parent.Left = v;
-        }
-        else
-        {
-            u.Parent.Right = v;
-        }
-
-        v.Parent = u.Parent;
-    }
-
-    private void RightRotate(RbNode newNode)
-    {
-        RbNode y = newNode.Left;
-        newNode.Left = y.Right;
-
-        if (y.Right == _TNULL)
-        {
-            y.Right.Parent = newNode;
-        }
-
-        y.Parent = newNode.Parent;
-        if (newNode.Parent == null)
+        y.Parent = x.Parent;
+        if (x.Parent == NIL)
         {
             _root = y;
         }
-        else if (newNode == newNode.Parent.Right)
+        else if (x == x.Parent.Left)
         {
-            newNode.Parent.Right = y;
+            x.Parent.Left = y;
         }
         else
         {
-            newNode.Parent.Left = y;
+            x.Parent.Right = y;
         }
 
-        y.Right = newNode;
-        newNode.Parent = y;
+        y.Left = x;
+        x.Parent = y;
     }
 
-    private void LeftRotate(RbNode newNode)
+    private void RightRotate(Node<T> x)
     {
-        RbNode y = newNode.Right;
-        newNode.Right = y.Left;
-
-        if (y.Left == _TNULL)
+        Node<T> y = x.Left;
+        x.Left = y.Right;
+        if (y.Right != NIL)
         {
-            y.Left.Parent = newNode;
+            y.Right.Parent = x;
         }
 
-        y.Parent = newNode.Parent;
-        if (newNode.Parent == null)
+        y.Parent = x.Parent;
+        if (x.Parent == NIL)
         {
             _root = y;
         }
-        else if (newNode == newNode.Parent.Left)
+        else if (x == x.Parent.Right)
         {
-            newNode.Parent.Left = y;
+            x.Parent.Right = y;
         }
         else
         {
-            newNode.Parent.Right = y;
+            x.Parent.Left = y;
         }
 
-        y.Left = newNode;
-        newNode.Parent = y;
+        y.Right = x;
+        x.Parent = y;
     }
 
-    public void Display()
+    private Node<T> TreeSuccessor(Node<T> X)
     {
-        DisplayHelper(this._root);
-    }
-
-    private void DisplayHelper(RbNode root)
-    {
-        if (root != _TNULL)
+        if (X.Left != null)
         {
-            DisplayHelper(root.Left);
-            Console.Write(root.Data + " ");
-            DisplayHelper(root.Right);
+            return FindMin(X);
         }
+
+        Node<T> Y = X.Parent;
+        while (Y != null && X == Y.Right)
+        {
+            X = Y;
+            Y = Y.Parent;
+        }
+
+        return Y;
     }
 }
