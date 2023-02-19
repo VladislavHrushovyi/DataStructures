@@ -16,12 +16,12 @@ public class RbTree<T> : BinaryTree<T> where T : IComparable
     {
         Node<T> z = new Node<T>(data);
         Node<T> y = NIL;
-        Node<T> temp = (Node<T>)_root;
+        Node<T> x = _root;
 
-        while (temp != NIL)
+        while (x != NIL)
         {
-            y = temp;
-            temp = z.Data.CompareTo(temp.Data) < 0 ? (Node<T>)temp.Left : (Node<T>)temp.Right;
+            y = x;
+            x = z.Data.CompareTo(x.Data) < 0 ? x.Left : x.Right;
         }
 
         z.Parent = y;
@@ -31,12 +31,17 @@ public class RbTree<T> : BinaryTree<T> where T : IComparable
             _root = z;
         }
         else if (z.Data.CompareTo(y.Data) < 0)
+        {
             y.Left = z;
+        }
         else
+        {
             y.Right = z;
+        }
 
-        z.Right = NIL;
         z.Left = NIL;
+        z.Right = NIL;
+        z.Color = NodeColor.Red;
 
         InsertFixup(z);
     }
@@ -47,7 +52,7 @@ public class RbTree<T> : BinaryTree<T> where T : IComparable
         {
             if (z.Parent == z.Parent.Parent.Left)
             {
-                Node<T> y = (Node<T>)z.Parent.Parent.Right;
+                Node<T> y = z.Parent.Parent.Right;
 
                 if (y.Color == NodeColor.Red)
                 {
@@ -71,7 +76,7 @@ public class RbTree<T> : BinaryTree<T> where T : IComparable
             }
             else
             {
-                Node<T> y = (Node<T>)z.Parent.Parent.Left;
+                Node<T> y = z.Parent.Parent.Left;
 
                 if (y.Color == NodeColor.Red)
                 {
@@ -100,116 +105,129 @@ public class RbTree<T> : BinaryTree<T> where T : IComparable
 
     public new void RemoveNode(T data)
     {
-        Node<T> item = Find(data);
-        Node<T> X = null;
-        Node<T> Y = null;
+        Node<T> z = Find(data);
 
-        if (item.Left == null || item.Right == null)
+        if (z == NIL)
         {
-            Y = item;
+            return; // the node to remove is not in the tree
+        }
+
+        Node<T> x;
+        Node<T> y = z;
+
+        NodeColor yOriginalColor = y.Color;
+
+        if (z.Left == NIL)
+        {
+            x = z.Right;
+            Transplant(z, z.Right);
+        }
+        else if (z.Right == NIL)
+        {
+            x = z.Left;
+            Transplant(z, z.Left);
         }
         else
         {
-            Y = TreeSuccessor(item);
+            y = FindMin(z.Right);
+            yOriginalColor = y.Color;
+            x = y.Right;
+
+            if (y.Parent == z)
+            {
+                x.Parent = y;
+            }
+            else
+            {
+                Transplant(y, y.Right);
+                y.Right = z.Right;
+                y.Right.Parent = y;
+            }
+
+            Transplant(z, y);
+            y.Left = z.Left;
+            y.Left.Parent = y;
+            y.Color = z.Color;
         }
 
-        if (Y.Left != null)
+        if (yOriginalColor == NodeColor.Black)
         {
-            X = Y.Left;
+            DeleteFixUp(x);
+        }
+    }
+
+    private void Transplant(Node<T> u, Node<T> v)
+    {
+        if (u.Parent == NIL)
+        {
+            _root = v;
+        }
+        else if (u == u.Parent.Left)
+        {
+            u.Parent.Left = v;
         }
         else
         {
-            X = Y.Right;
+            u.Parent.Right = v;
         }
 
-        if (X != null)
-        {
-            X.Parent = Y;
-        }
-
-        if (Y.Parent == null)
-        {
-            _root = X;
-        }
-        else if (Y == Y.Parent.Left)
-        {
-            Y.Parent.Left = X;
-        }
-        else
-        {
-            Y.Parent.Left = X;
-        }
-
-        if (Y != item)
-        {
-            item.Data = Y.Data;
-        }
-
-        if (Y.Color == NodeColor.Black)
-        {
-            DeleteFixUp(X);
-        }
+        v.Parent = u.Parent;
     }
 
     private void DeleteFixUp(Node<T> x)
     {
-        Node<T> s;
         while (x != _root && x.Color == NodeColor.Black) {
             if (x == x.Parent.Left) {
-                s = x.Parent.Right;
-                if (s.Color == NodeColor.Red) {
-                    s.Color = NodeColor.Black;
+                Node<T> w = x.Parent.Right;
+                if (w.Color == NodeColor.Red) {
+                    w.Color = NodeColor.Black;
                     x.Parent.Color = NodeColor.Red;
                     LeftRotate(x.Parent);
-                    s = x.Parent.Right;
+                    w = x.Parent.Right;
                 }
-
-                if (s.Left.Color == NodeColor.Black && s.Right.Color == NodeColor.Black) {
-                    s.Color = NodeColor.Red;
+                if (w.Left.Color == NodeColor.Black && w.Right.Color == NodeColor.Black) {
+                    w.Color = NodeColor.Red;
                     x = x.Parent;
                 } else {
-                    if (s.Right.Color == NodeColor.Black) {
-                        s.Left.Color = NodeColor.Black;
-                        s.Color = NodeColor.Red;
-                        RightRotate(s);
-                        s = x.Parent.Right;
+                    if (w.Right.Color == NodeColor.Black) {
+                        w.Left.Color = NodeColor.Black;
+                        w.Color = NodeColor.Red;
+                        RightRotate(w);
+                        w = x.Parent.Right;
                     }
-
-                    s.Color = x.Parent.Color;
+                    w.Color = x.Parent.Color;
                     x.Parent.Color = NodeColor.Black;
-                    s.Right.Color = NodeColor.Black;
+                    w.Right.Color = NodeColor.Black;
                     LeftRotate(x.Parent);
                     x = _root;
                 }
             } else {
-                s = x.Parent.Left;
-                if (s.Color == NodeColor.Red) {
-                    s.Color = NodeColor.Black;
+                Node<T> w = x.Parent.Left;
+                if (w.Color == NodeColor.Red) {
+                    w.Color = NodeColor.Black;
                     x.Parent.Color = NodeColor.Red;
                     RightRotate(x.Parent);
-                    s = x.Parent.Left;
+                    w = x.Parent.Left;
                 }
-
-                if (s.Right.Color == NodeColor.Black && s.Right.Color == NodeColor.Black) {
-                    s.Color = NodeColor.Red;
+                if (w.Right.Color == NodeColor.Black && w.Left.Color == NodeColor.Black) {
+                    w.Color = NodeColor.Red;
                     x = x.Parent;
                 } else {
-                    if (s.Left.Color == NodeColor.Black) {
-                        s.Right.Color = NodeColor.Black;
-                        s.Color = NodeColor.Red;
-                        LeftRotate(s);
-                        s = x.Parent.Left;
+                    if (w.Left.Color == NodeColor.Black) {
+                        w.Right.Color = NodeColor.Black;
+                        w.Color = NodeColor.Red;
+                        LeftRotate(w);
+                        w = x.Parent.Left;
                     }
-
-                    s.Color = x.Parent.Color;
+                    w.Color = x.Parent.Color;
                     x.Parent.Color = NodeColor.Black;
-                    s.Left.Color = NodeColor.Black;
+                    w.Left.Color = NodeColor.Black;
                     RightRotate(x.Parent);
                     x = _root;
                 }
             }
         }
-        x.Color = 0;
+        x.Color = NodeColor.Black;
     }
 
     private void LeftRotate(Node<T> x)
@@ -232,7 +250,7 @@ public class RbTree<T> : BinaryTree<T> where T : IComparable
         }
         else
         {
-            x.Parent.Right = y;
+            y.Parent.Right = y;
         }
 
         y.Left = x;
@@ -264,22 +282,5 @@ public class RbTree<T> : BinaryTree<T> where T : IComparable
 
         y.Right = x;
         x.Parent = y;
-    }
-
-    private Node<T> TreeSuccessor(Node<T> X)
-    {
-        if (X.Left != null)
-        {
-            return FindMin(X);
-        }
-
-        Node<T> Y = X.Parent;
-        while (Y != null && X == Y.Right)
-        {
-            X = Y;
-            Y = Y.Parent;
-        }
-
-        return Y;
     }
 }
