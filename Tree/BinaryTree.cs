@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Tree;
+﻿namespace Tree;
 
 public class BinaryTree<T> : ITree<T> where T : IComparable
 {

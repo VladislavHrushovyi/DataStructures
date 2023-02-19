@@ -16,12 +16,12 @@ public class RbTree<T> : BinaryTree<T> where T : IComparable
     {
         Node<T> z = new Node<T>(data);
         Node<T> y = NIL;
-        Node<T> temp = _root;
+        Node<T> temp = (Node<T>)_root;
 
         while (temp != NIL)
         {
             y = temp;
-            temp = z.Data.CompareTo(temp.Data) < 0 ? temp.Left : temp.Right;
+            temp = z.Data.CompareTo(temp.Data) < 0 ? (Node<T>)temp.Left : (Node<T>)temp.Right;
         }
 
         z.Parent = y;
@@ -47,7 +47,7 @@ public class RbTree<T> : BinaryTree<T> where T : IComparable
         {
             if (z.Parent == z.Parent.Parent.Left)
             {
-                Node<T> y = z.Parent.Parent.Right;
+                Node<T> y = (Node<T>)z.Parent.Parent.Right;
 
                 if (y.Color == NodeColor.Red)
                 {
@@ -71,7 +71,7 @@ public class RbTree<T> : BinaryTree<T> where T : IComparable
             }
             else
             {
-                Node<T> y = z.Parent.Parent.Left;
+                Node<T> y = (Node<T>)z.Parent.Parent.Left;
 
                 if (y.Color == NodeColor.Red)
                 {
