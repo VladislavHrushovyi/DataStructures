@@ -11,7 +11,7 @@ Data structures
     - [x] Create Queue using stack
 - [x] Trees
   - [x] Realize binary tree
-  - [ ] AVL tree
+  - [x] AVL tree
   - [x] Realize black-red tree
   - [x] Realize main methods
   - [x] Find k-th element
