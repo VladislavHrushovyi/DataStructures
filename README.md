@@ -17,7 +17,7 @@ Data structures
   - [x] Find k-th element
   - [x] Calculate Tree depth
 - [x] Hash function
-- [ ] Hash table
+- [x] Hash table
 - [ ] Graph
   - [ ] BFS and DFS
 
