@@ -1,14 +1,22 @@
-﻿using Tree;
+﻿using System.Runtime.CompilerServices;
+using Tree;
 
 namespace HashFT;
 
 public class HashTable<TValue> where TValue : IComparable
 {
-    private AvlTree<TValue>[] Table = new AvlTree<TValue>[100];
+    private readonly int Capacity;
+    private AvlTree<TValue>[] Table;
+
+    public HashTable(int capacity)
+    {
+        Capacity = capacity;
+        Table = new AvlTree<TValue>[Capacity];
+    }
 
     public void Add(TValue item)
     {
-        var hashValue = HashGenerator.ByDigitFolding(item.ToString());
+        var hashValue = HashGenerator.ByDigitFolding(item.ToString()) % Capacity;
         if (Table[hashValue] == null)
         {
             Table[hashValue] = new AvlTree<TValue>();
@@ -18,13 +26,13 @@ public class HashTable<TValue> where TValue : IComparable
 
     public void Remove(TValue val)
     {
-        var hasValue = HashGenerator.ByDigitFolding(val.ToString());
-        Table[hasValue] = null;
+        var hashValue = HashGenerator.ByDigitFolding(val.ToString()) % Capacity;
+        Table[hashValue].RemoveNode(val);
     }
 
     public IComparable Find(TValue key)
     {
-        var hash = HashGenerator.ByDigitFolding(key.ToString());
+        var hash = HashGenerator.ByDigitFolding(key.ToString()) % Capacity;
         if (Table[hash] != null)
         {
             return Table[hash].Find(key).Data;

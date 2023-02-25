@@ -23,9 +23,9 @@ using HashFT;
 // Console.WriteLine($"Value \"{data}\" have hash {HashGenerator.ByMultiplication(data)}");
 // Console.WriteLine("____________END_____________");
 
-var hashTable = new HashTable<string>();
-var values = Enumerable.Range(1, 100)
-    .Select(_ => new Random().Next(1, 1000));
+var hashTable = new HashTable<string>(1000);
+var values = Enumerable.Range(1, 1000)
+    .Select(_ => new Random().Next(1, 10000));
 
 foreach (var value in values)
 {
@@ -40,3 +40,8 @@ var key = Convert.ToInt32(Console.ReadLine());
 var findValues = hashTable.Find(key.ToString());
 
 Console.WriteLine($"Findind value {findValues}");
+
+Console.WriteLine("Enter key to remove");
+key = Convert.ToInt32(Console.ReadLine());
+hashTable.Remove(key.ToString());
+hashTable.Display();
