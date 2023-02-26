@@ -1,11 +1,12 @@
 ﻿
 using HashFT;
 
+// int coef = 97;
 // int value = 555;
 // string data = "Hello wowrld";
 // Console.WriteLine("____________DIVIDING METHOD____________");
-// Console.WriteLine($"Value {value} have hash {HashGenerator.ByDividing(value)}");
-// Console.WriteLine($"Value \"{data}\" have hash {HashGenerator.ByDividing(data)}");
+// Console.WriteLine($"Value {value} have hash {HashGenerator.ByDividing(value, coef)}");
+// Console.WriteLine($"Value \"{data}\" have hash {HashGenerator.ByDividing(data, coef)}");
 // Console.WriteLine("____________END_____________");
 //
 // Console.WriteLine("_____________MID-SQUARE METHOD____________");
@@ -19,17 +20,17 @@ using HashFT;
 // Console.WriteLine("____________END_____________");
 //
 // Console.WriteLine("_____________DIGIT FOLDING METHOD____________");
-// Console.WriteLine($"Value {value} have hash {HashGenerator.ByMultiplication(value)}");
-// Console.WriteLine($"Value \"{data}\" have hash {HashGenerator.ByMultiplication(data)}");
+// Console.WriteLine($"Value {value} have hash {HashGenerator.ByMultiplication(value, coef)}");
+// Console.WriteLine($"Value \"{data}\" have hash {HashGenerator.ByMultiplication(data, coef)}");
 // Console.WriteLine("____________END_____________");
 
 var hashTable = new HashTable<string>(1000);
 var values = Enumerable.Range(1, 1000)
     .Select(_ => new Random().Next(1, 10000));
 
-foreach (var value in values)
+foreach (var item in values)
 {
-    hashTable.Add(value.ToString());    
+    hashTable.Add(item.ToString());    
 }
 
 hashTable.Display();

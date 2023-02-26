@@ -7,16 +7,16 @@ public static class HashGenerator
     private const int MagicCoef = 97;
     private const double A = 0.3252342;
 
-    public static int ByDividing(int value)
+    public static int ByDividing(int value, int coef)
     {
-        return value % MagicCoef;
+        return value % coef;
     }
 
-    public static int ByDividing(string data)
+    public static int ByDividing(string data, int coef)
     {
         var sumAscii = Encoding.ASCII.GetBytes(data).Sum(s => s);
 
-        return sumAscii % MagicCoef;
+        return ByDividing(sumAscii, coef);
     }
 
     public static int ByMidSquare(int value)
@@ -54,15 +54,15 @@ public static class HashGenerator
         return ByDigitFolding(sumAscii);
     }
 
-    public static int ByMultiplication(int value)
+    public static int ByMultiplication(int value, int coef)
     {
-        return Convert.ToInt32(Math.Floor(MagicCoef * (value * A)));
+        return Convert.ToInt32(Math.Floor(coef * (value * A)));
     }
 
-    public static int ByMultiplication(string data)
+    public static int ByMultiplication(string data, int coef)
     {
         var sumAscii = Encoding.ASCII.GetBytes(data).Sum(s => s);
 
-        return ByMultiplication(sumAscii);
+        return ByMultiplication(sumAscii, coef);
     }
 }
