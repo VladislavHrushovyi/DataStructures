@@ -1,20 +1,25 @@
 ﻿using Graph;
 
-var graph = new MyGraph();
+var g = new MyGraph();
 
-graph.AddVertex("A");
-graph.AddVertex("B");
-graph.AddVertex("C");
-graph.AddVertex("D");
-graph.AddVertex("E");
+g.AddVertex("1");
+g.AddVertex("2");
+g.AddVertex("3");
+g.AddVertex("4");
+g.AddVertex("5");
+g.AddVertex("6");
 
-graph.AddEdge("A", "B", 5);
-graph.AddEdge("A", "D", 7);
-graph.AddEdge("C", "A", 8);
-graph.AddEdge("E", "D", 10);
-graph.AddEdge("C", "E", 18);
-graph.AddEdge("B", "E", 15);
-graph.AddEdge("D", "B", 3);
-graph.AddEdge("C", "A", 5);
+g.AddEdge("5", "6", 9);
+g.AddEdge("5", "4", 6);
+g.AddEdge("6", "3", 3);
+g.AddEdge("6", "1", 14);
+g.AddEdge("4", "3", 11);
+g.AddEdge("4", "2", 15);
+g.AddEdge("3", "1", 9);
+g.AddEdge("3", "2", 10);
+g.AddEdge("1", "2", 7);
 
-graph.Display();
+var dijkstra = new DejkstraAlgorithm(g);
+var path = dijkstra.FindShortestPath("1", "5");
+Console.WriteLine(path);
+Console.ReadLine();
