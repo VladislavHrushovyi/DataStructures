@@ -1,4 +1,6 @@
-﻿namespace Graph;
+﻿using Stack;
+
+namespace Graph;
 
 public class MyGraph
 {

@@ -1,17 +1,17 @@
 ﻿namespace Graph;
 
-public class DejkstraAlgorithm
+public class DijkstraAlgorithm
 {
-    private readonly MyGraph Graph;
-    private readonly List<GraphVertexInfo> _vertexInfos;
+    protected readonly MyGraph Graph;
+    protected readonly List<GraphVertexInfo> _vertexInfos;
 
-    public DejkstraAlgorithm(MyGraph graph)
+    public DijkstraAlgorithm(MyGraph graph)
     {
         Graph = graph;
         _vertexInfos = Graph.Vertices.Select(v => new GraphVertexInfo(v)).ToList();
     }
 
-    private GraphVertexInfo GetVertexInfo(GraphVertex vertex)
+    protected GraphVertexInfo GetVertexInfo(GraphVertex vertex)
     {
         return _vertexInfos.SingleOrDefault(v => v.Vertex == vertex);
     }
@@ -40,7 +40,7 @@ public class DejkstraAlgorithm
 
     private void SetSumToTheNextVertex(GraphVertexInfo current)
     {
-        current.IsVisited = false;
+        current.IsUnvisited = false;
         foreach (var edge in current.Vertex.Edges)
         {
             var nextInfo = GetVertexInfo(edge.ConnectedVertex);
@@ -59,7 +59,7 @@ public class DejkstraAlgorithm
         GraphVertexInfo minVertexInfo = null;
         foreach (var i in _vertexInfos)
         {
-            if (i.IsVisited && i.EdgeWeightSum < minValue)
+            if (i.IsUnvisited && i.EdgeWeightSum < minValue)
             {
                 minVertexInfo = i;
                 minValue = i.EdgeWeightSum;
@@ -82,17 +82,17 @@ public class DejkstraAlgorithm
     }
 }
 
-internal class GraphVertexInfo
+public class GraphVertexInfo
 {
     public GraphVertex Vertex { get; set; }
-    public bool IsVisited { get; set; }
+    public bool IsUnvisited { get; set; }
     public int EdgeWeightSum { get; set; }
     public GraphVertex PrevVertex { get; set; }
 
     public GraphVertexInfo(GraphVertex vertex)
     {
         Vertex = vertex;
-        IsVisited = true;
+        IsUnvisited = true;
         EdgeWeightSum = int.MaxValue;
         PrevVertex = null;
     }

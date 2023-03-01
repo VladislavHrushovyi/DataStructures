@@ -19,7 +19,14 @@ g.AddEdge("3", "1", 9);
 g.AddEdge("3", "2", 10);
 g.AddEdge("1", "2", 7);
 
-var dijkstra = new DejkstraAlgorithm(g);
+var dijkstra = new DijkstraAlgorithm(g);
 var path = dijkstra.FindShortestPath("1", "5");
 Console.WriteLine(path);
-Console.ReadLine();
+
+var bdfs = new BDFS(g);
+
+bdfs.BFS("5");
+Console.WriteLine();
+
+bdfs.DFS("5");
+Console.WriteLine();
