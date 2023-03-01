@@ -1,9 +1,14 @@
-﻿namespace Stack;
+﻿using System.Reflection.Metadata.Ecma335;
+
+namespace Stack;
 
 public class MyQueue<T>
 {
     private readonly MyStack<T> _stack1 = new();
     private readonly MyStack<T> _stack2 = new();
+    private int _count;
+
+    public int Count => _count;
 
     public void EnQueue(T data)
     {
@@ -17,7 +22,9 @@ public class MyQueue<T>
         while (!_stack2.IsEmpty())
         {
             _stack1.Push(_stack2.Pop());
-        }   
+        }
+
+        _count++;
     }
 
     public T DeQueue()
@@ -30,6 +37,7 @@ public class MyQueue<T>
         var itemObjData = _stack1.Peek();
         _stack1.Pop();
 
+        _count--;
         return itemObjData;
     }
 }
