@@ -18,8 +18,9 @@ Data structures
   - [x] Calculate Tree depth
 - [x] Hash function
 - [x] Hash table
-- [ ] Graph
-  - [ ] BFS and DFS
+- [x] Graph
+  - [x] BFS and DFS
+  - [x] Shortest path by Dijkstra algorithm
 
 Algorithm
 
