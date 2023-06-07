@@ -7,8 +7,8 @@ public class LineComparer : IComparer<Line>
         if (ReferenceEquals(x, y)) return 0;
         if (ReferenceEquals(null, y)) return 1;
         if (ReferenceEquals(null, x)) return -1;
-        var stringComparison = string.Compare(x.Data, y.Data, StringComparison.Ordinal);
-        if (stringComparison != 0) return stringComparison;
-        return x.Number.CompareTo(y.Number);
+        var numberComparison = x.Number.CompareTo(y.Number);
+        if (numberComparison != 0) return numberComparison;
+        return string.Compare(x.Data, y.Data, StringComparison.Ordinal);
     }
 }

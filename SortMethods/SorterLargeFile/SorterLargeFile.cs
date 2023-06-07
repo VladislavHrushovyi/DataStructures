@@ -21,10 +21,10 @@ public class SorterLargeFile
     public void Sort()
     {
         SeparateFile();
-        
+        SortResult();
     }
 
-    private string SortResult()
+    private void SortResult()
     {
         try
         {
@@ -48,7 +48,7 @@ public class SorterLargeFile
                 }
 
                 current.Line = new Line(current.Reader.ReadLine());
-                Reorder(lines);
+                lines = Reorder(lines);
             }
         }
         catch (Exception e)
@@ -63,16 +63,20 @@ public class SorterLargeFile
                 stream.Dispose();
             }
         }
-        return _path;
     }
 
-    private void Reorder(List<LineState> lines)
+    private List<LineState> Reorder(List<LineState> lines)
     {
-        throw new NotImplementedException();
+        if (lines.Count == 1)
+        {
+            return lines.Take(1).ToList();
+        }
+        return lines.OrderBy(x => x.Line).ToList();
     }
 
     private void SeparateFile()
     {
+        // USE READER, INSTEAD FILE.READALLLINES
         int countSepFiles = 1;
         foreach (var rows in File.ReadAllLines($"./{_path}").Chunk(_partOfSeparate))
         {
