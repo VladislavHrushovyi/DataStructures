@@ -13,3 +13,9 @@
     -- RAM sorting part files (700mb - 1300mb)
     -- RAM usage merge part file (~900mb)
     -- time sorting (00:01:03.8153700)
+    
+### Use async/await *20_000_000 rows in files by split 2_000_000*
+    -- RAM usage memory of separating (320-330mb)
+    -- RAM sorting part files (900-1500mb)
+    -- RAM usage merge part file (964mb)
+    -- time sorting (00:01:27.2384125)

@@ -4,12 +4,12 @@ using System.Diagnostics;
 using SortMethods.SorterLargeFile;
 
 var stopwatch = new Stopwatch();
-string pathFile = new FileCreator(20_000_000).CreateLargeFile();
+string pathFile = await new FileCreator(20_000_000).CreateLargeFile();
 
 var sorterLargeFile = new SorterLargeFile(2_000_000, pathFile);
 
 stopwatch.Start();
-sorterLargeFile.Sort();
+await sorterLargeFile.Sort();
 stopwatch.Stop();
 
 Console.WriteLine(stopwatch.Elapsed);

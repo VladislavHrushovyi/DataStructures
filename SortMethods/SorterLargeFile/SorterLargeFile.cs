@@ -15,17 +15,17 @@ public class SorterLargeFile
 
     private class LineState
     {
-        public StreamReader? Reader { get; set; }
+        public StreamReader? Reader { get; init; }
         public Line Line { get; set; }
     }
 
-    public void Sort()
+    public async Task Sort()
     {
-        SeparateFile();
-        SortResult();
+        await SeparateFile();
+        await SortResult();
     }
 
-    private void SortResult()
+    private async Task SortResult()
     {
         var readers = _partFiles.Select(x => new StreamReader(x)).ToArray();
         try
@@ -36,13 +36,13 @@ public class SorterLargeFile
                 Line = new Line(x.ReadLine()!)
             }).OrderBy(x => x.Line).ToList();
 
-            using var writerResult = new StreamWriter(_path);
+            await using var writerResult = new StreamWriter(_path);
             int logStep = 0;
             int countLogStep = 0;
             while (lines.Count > 0)
             {
                 var current = lines.First();
-                writerResult.WriteLine(current.Line);
+                await writerResult.WriteLineAsync(current.Line.ToString());
 
                 if (current.Reader!.EndOfStream)
                 {
@@ -50,7 +50,7 @@ public class SorterLargeFile
                     continue;
                 }
 
-                current.Line = new Line(current.Reader.ReadLine()!);
+                current.Line = new Line(await current.Reader.ReadLineAsync());
                 lines = Reorder(lines);
 
                 if (logStep == 1_000_000)
@@ -87,7 +87,7 @@ public class SorterLargeFile
         return lines.OrderBy(x => x.Line).ToList();
     }
 
-    private void SeparateFile()
+    private async Task SeparateFile()
     {
         int countSepFiles = 1;
         int i = 0;
@@ -95,14 +95,14 @@ public class SorterLargeFile
         var chunkItems = new string[_chunkSize];
         while (!readerInputFile.EndOfStream)
         {
-            var stringLine = readerInputFile.ReadLine();
+            var stringLine = await readerInputFile.ReadLineAsync();
             chunkItems[i] = stringLine!;
 
             if (i == _chunkSize - 1)
             {
                 
                 var partFileName = countSepFiles + ".txt";
-                File.WriteAllLines(partFileName, chunkItems);
+                await File.WriteAllLinesAsync(partFileName, chunkItems);
                 i = 0;
                 countSepFiles++;
                 Console.WriteLine(partFileName + " was created");
@@ -111,20 +111,20 @@ public class SorterLargeFile
 
             i++;
         }
-        SortPartFiles();
+        await SortPartFiles();
         Array.Clear(chunkItems);
         readerInputFile.Dispose();
     }
 
-    private void SortPartFiles()
+    private async Task SortPartFiles()
     {
         foreach (var partFile in _partFiles)
         {
-            var lines = File.ReadAllLines(partFile).Select(x => new Line(x))
+            var lines = (await File.ReadAllLinesAsync(partFile)).Select(x => new Line(x))
                 .OrderBy(x => x)
                 .Select(x => x.ToString())
                 .ToArray();
-            File.WriteAllLines(partFile, lines);
+            await File.WriteAllLinesAsync(partFile, lines);
             Console.WriteLine(partFile + " sorted");
             Array.Clear(lines);
         }
