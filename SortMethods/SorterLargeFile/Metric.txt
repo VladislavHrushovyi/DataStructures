@@ -5,5 +5,11 @@
     
 %% Change class Line to struct *200_000_000 rows in files by split 20_000_000*
     -- RAM separating files from 2.9gb to 3.9gb
-    -- RAM merge files sorting files from  down to 
+    -- RAM merge files sorting files ~700mb
     -- time sorting 
+    
+### Divide form part files and sort part files *20_000_000 rows in files by split 2_000_000*
+    -- RAM usage memory of separating (~330mb)
+    -- RAM sorting part files (700mb - 1300mb)
+    -- RAM usage merge part file (~900mb)
+    -- time sorting (00:01:03.8153700)

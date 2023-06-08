@@ -4,15 +4,16 @@ using System.Diagnostics;
 using SortMethods.SorterLargeFile;
 
 var stopwatch = new Stopwatch();
-string pathFile = new FileCreator(200_000_000).CreateLargeFile();
+string pathFile = new FileCreator(20_000_000).CreateLargeFile();
 
-var sorterLargeFile = new SorterLargeFile(20_000_000, pathFile);
+var sorterLargeFile = new SorterLargeFile(2_000_000, pathFile);
 
 stopwatch.Start();
 sorterLargeFile.Sort();
 stopwatch.Stop();
 
 Console.WriteLine(stopwatch.Elapsed);
+Console.ReadKey();
 
 // var sDll = new SorterDll();
 // sDll.Display();

@@ -4,18 +4,18 @@ public class SorterLargeFile
 {
     private readonly int _chunkSize;
     private readonly string _path;
-    private readonly List<StreamReader> _fileStreams;
+    private readonly List<string> _partFiles;
 
     public SorterLargeFile(int sorterPart, string path)
     {
         this._chunkSize = sorterPart;
         _path = path;
-        this._fileStreams = new List<StreamReader>();
+        this._partFiles = new List<string>();
     }
 
     private class LineState
     {
-        public StreamReader Reader { get; set; }
+        public StreamReader? Reader { get; set; }
         public Line Line { get; set; }
     }
 
@@ -27,39 +27,40 @@ public class SorterLargeFile
 
     private void SortResult()
     {
+        var readers = _partFiles.Select(x => new StreamReader(x)).ToArray();
         try
         {
-            var lines = _fileStreams.Select(x => new LineState()
+            var lines = readers.Select(x => new LineState()
             {
                 Reader = x,
-                Line = new Line(x.ReadLine())
+                Line = new Line(x.ReadLine()!)
             }).OrderBy(x => x.Line).ToList();
 
             using var writerResult = new StreamWriter(_path);
-            int logstep = 0;
+            int logStep = 0;
             int countLogStep = 0;
             while (lines.Count > 0)
             {
                 var current = lines.First();
                 writerResult.WriteLine(current.Line);
 
-                if (current.Reader.EndOfStream)
+                if (current.Reader!.EndOfStream)
                 {
                     lines.Remove(current);
                     continue;
                 }
 
-                current.Line = new Line(current.Reader.ReadLine());
+                current.Line = new Line(current.Reader.ReadLine()!);
                 lines = Reorder(lines);
 
-                if (logstep == 1_000_000)
+                if (logStep == 1_000_000)
                 {
                     countLogStep++;
-                    Console.WriteLine(logstep * countLogStep + " lines was merged");
-                    logstep = 0;
+                    Console.WriteLine(logStep * countLogStep + " lines was merged");
+                    logStep = 0;
                 }
 
-                logstep++;
+                logStep++;
             }
         }
         catch (Exception e)
@@ -69,7 +70,7 @@ public class SorterLargeFile
         }
         finally
         {
-            foreach (var stream in _fileStreams)
+            foreach (var stream in readers)
             {
                 stream.Dispose();
             }
@@ -90,42 +91,42 @@ public class SorterLargeFile
     {
         int countSepFiles = 1;
         int i = 0;
-        var readerInputFile = new StreamReader(_path);
-        var chunkItems = new Line[_chunkSize];
-        Console.WriteLine("allo");
+        using var readerInputFile = new StreamReader(_path);
+        var chunkItems = new string[_chunkSize];
         while (!readerInputFile.EndOfStream)
         {
-            var stringLine = readerInputFile.ReadLine().Split(" ");
-            chunkItems[i] = new Line(stringLine);
+            var stringLine = readerInputFile.ReadLine();
+            chunkItems[i] = stringLine!;
 
             if (i == _chunkSize - 1)
             {
-                var result = chunkItems
-                    .OrderBy(x => x)
-                    .Select(x => x.ToString());
+                
                 var partFileName = countSepFiles + ".txt";
-                File.WriteAllLines(partFileName, result);
+                File.WriteAllLines(partFileName, chunkItems);
                 i = 0;
                 countSepFiles++;
                 Console.WriteLine(partFileName + " was created");
-                _fileStreams.Add(new StreamReader(partFileName));
+                _partFiles.Add(partFileName);
             }
 
             i++;
         }
-
+        SortPartFiles();
+        Array.Clear(chunkItems);
         readerInputFile.Dispose();
+    }
 
-        // foreach (var rows in File.ReadAllLines($"./{_path}").Chunk(_partOfSeparate))
-        // {
-        //     var lines = rows.Select(line => new Line(line.Split(" ")))
-        //         .Order(new LineComparer()).Select(x => x.ToString());
-        //         //.OrderBy(x => x.Data).ThenBy(x => x.Number).Select(x => x.ToString());
-        //
-        //     string fileName = countSepFiles + ".txt";
-        //     File.WriteAllLines($"{countSepFiles}.txt", lines);
-        //     _fileStreams.Add(new StreamReader(fileName));
-        //     countSepFiles++;
-        // }
+    private void SortPartFiles()
+    {
+        foreach (var partFile in _partFiles)
+        {
+            var lines = File.ReadAllLines(partFile).Select(x => new Line(x))
+                .OrderBy(x => x)
+                .Select(x => x.ToString())
+                .ToArray();
+            File.WriteAllLines(partFile, lines);
+            Console.WriteLine(partFile + " sorted");
+            Array.Clear(lines);
+        }
     }
 }
