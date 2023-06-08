@@ -5,13 +5,14 @@ public class SorterLargeFile
     private readonly int _chunkSize;
     private readonly string _path;
     private readonly List<StreamReader> _fileStreams;
+
     public SorterLargeFile(int sorterPart, string path)
     {
         this._chunkSize = sorterPart;
         _path = path;
         this._fileStreams = new List<StreamReader>();
     }
-    
+
     private class LineState
     {
         public StreamReader Reader { get; set; }
@@ -36,6 +37,7 @@ public class SorterLargeFile
 
             using var writerResult = new StreamWriter(_path);
             int logstep = 0;
+            int countLogStep = 0;
             while (lines.Count > 0)
             {
                 var current = lines.First();
@@ -50,10 +52,11 @@ public class SorterLargeFile
                 current.Line = new Line(current.Reader.ReadLine());
                 lines = Reorder(lines);
 
-                if (logstep == 1_000_00)
+                if (logstep == 1_000_000)
                 {
-                   Console.WriteLine(logstep + " lines was merged");
-                   logstep = 0;
+                    countLogStep++;
+                    Console.WriteLine(logstep * countLogStep + " lines was merged");
+                    logstep = 0;
                 }
 
                 logstep++;
@@ -79,6 +82,7 @@ public class SorterLargeFile
         {
             return lines.Take(1).ToList();
         }
+
         return lines.OrderBy(x => x.Line).ToList();
     }
 
@@ -93,10 +97,10 @@ public class SorterLargeFile
         {
             var stringLine = readerInputFile.ReadLine().Split(" ");
             chunkItems[i] = new Line(stringLine);
-            
+
             if (i == _chunkSize - 1)
             {
-                var result = chunkItems.Where(x => x != null)
+                var result = chunkItems
                     .OrderBy(x => x)
                     .Select(x => x.ToString());
                 var partFileName = countSepFiles + ".txt";
@@ -109,9 +113,9 @@ public class SorterLargeFile
 
             i++;
         }
-        
+
         readerInputFile.Dispose();
-        
+
         // foreach (var rows in File.ReadAllLines($"./{_path}").Chunk(_partOfSeparate))
         // {
         //     var lines = rows.Select(line => new Line(line.Split(" ")))

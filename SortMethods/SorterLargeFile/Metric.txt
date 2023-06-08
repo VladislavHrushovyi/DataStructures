@@ -1,4 +1,9 @@
 ﻿now *200_000_000 rows in files by split 20_000_000*
-    - RAM separating files  - 4gb to 4.8gb
+    - RAM separating files  - ~4gb to ~4.8gb
     - RAM merge files sorting files from 4.6 down to 56mb
     - time sorting 00:19:31.3500839
+    
+%% Change class Line to struct *200_000_000 rows in files by split 20_000_000*
+    -- RAM separating files from 2.9gb to 3.9gb
+    -- RAM merge files sorting files from  down to 
+    -- time sorting 
