@@ -6,7 +6,7 @@ using SortMethods.SorterLargeFile;
 var stopwatch = new Stopwatch();
 string pathFile = new FileCreator(200_000_000).CreateLargeFile();
 
-var sorterLargeFile = new SorterLargeFile(1_000_000, pathFile);
+var sorterLargeFile = new SorterLargeFile(20_000_000, pathFile);
 
 stopwatch.Start();
 sorterLargeFile.Sort();

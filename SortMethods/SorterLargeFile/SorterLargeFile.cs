@@ -2,12 +2,12 @@
 
 public class SorterLargeFile
 {
-    private readonly int _partOfSeparate;
+    private readonly int _chunkSize;
     private readonly string _path;
     private readonly List<StreamReader> _fileStreams;
     public SorterLargeFile(int sorterPart, string path)
     {
-        this._partOfSeparate = sorterPart;
+        this._chunkSize = sorterPart;
         _path = path;
         this._fileStreams = new List<StreamReader>();
     }
@@ -35,7 +35,7 @@ public class SorterLargeFile
             }).OrderBy(x => x.Line).ToList();
 
             using var writerResult = new StreamWriter(_path);
-
+            int logstep = 0;
             while (lines.Count > 0)
             {
                 var current = lines.First();
@@ -49,6 +49,14 @@ public class SorterLargeFile
 
                 current.Line = new Line(current.Reader.ReadLine());
                 lines = Reorder(lines);
+
+                if (logstep == 1_000_00)
+                {
+                   Console.WriteLine(logstep + " lines was merged");
+                   logstep = 0;
+                }
+
+                logstep++;
             }
         }
         catch (Exception e)
@@ -76,18 +84,44 @@ public class SorterLargeFile
 
     private void SeparateFile()
     {
-        // USE READER, INSTEAD FILE.READALLLINES
         int countSepFiles = 1;
-        foreach (var rows in File.ReadAllLines($"./{_path}").Chunk(_partOfSeparate))
+        int i = 0;
+        var readerInputFile = new StreamReader(_path);
+        var chunkItems = new Line[_chunkSize];
+        Console.WriteLine("allo");
+        while (!readerInputFile.EndOfStream)
         {
-            var lines = rows.Select(line => new Line(line.Split(" ")))
-                .Order(new LineComparer()).Select(x => x.ToString());
-                //.OrderBy(x => x.Data).ThenBy(x => x.Number).Select(x => x.ToString());
+            var stringLine = readerInputFile.ReadLine().Split(" ");
+            chunkItems[i] = new Line(stringLine);
+            
+            if (i == _chunkSize - 1)
+            {
+                var result = chunkItems.Where(x => x != null)
+                    .OrderBy(x => x)
+                    .Select(x => x.ToString());
+                var partFileName = countSepFiles + ".txt";
+                File.WriteAllLines(partFileName, result);
+                i = 0;
+                countSepFiles++;
+                Console.WriteLine(partFileName + " was created");
+                _fileStreams.Add(new StreamReader(partFileName));
+            }
 
-            string fileName = countSepFiles + ".txt";
-            File.WriteAllLines($"{countSepFiles}.txt", lines);
-            _fileStreams.Add(new StreamReader(fileName));
-            countSepFiles++;
+            i++;
         }
+        
+        readerInputFile.Dispose();
+        
+        // foreach (var rows in File.ReadAllLines($"./{_path}").Chunk(_partOfSeparate))
+        // {
+        //     var lines = rows.Select(line => new Line(line.Split(" ")))
+        //         .Order(new LineComparer()).Select(x => x.ToString());
+        //         //.OrderBy(x => x.Data).ThenBy(x => x.Number).Select(x => x.ToString());
+        //
+        //     string fileName = countSepFiles + ".txt";
+        //     File.WriteAllLines($"{countSepFiles}.txt", lines);
+        //     _fileStreams.Add(new StreamReader(fileName));
+        //     countSepFiles++;
+        // }
     }
 }

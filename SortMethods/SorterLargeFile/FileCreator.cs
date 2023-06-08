@@ -15,8 +15,8 @@ public class FileCreator
     {
         if (File.Exists("./large_text_file.txt"))
         {
-            //File.Delete("./large_text_file.txt");
-            return "large_text_file.txt";
+            File.Delete("./large_text_file.txt");
+            //return "large_text_file.txt";
         }
         using var writer = File.AppendText("./large_text_file.txt");
         for (int i = 1; i <= _rowCount; i++)
