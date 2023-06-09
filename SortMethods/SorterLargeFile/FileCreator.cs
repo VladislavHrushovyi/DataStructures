@@ -12,7 +12,7 @@ public class FileCreator
         words = Enumerable.Range(0, 10_000)
             .Select(x =>
             {
-                var range = Enumerable.Range(20, 100);
+                var range = Enumerable.Range(0, _rnd.Next(20, 100));
                 var chars = range.Select(_ => (char)_rnd.Next('A', 'Z')).ToArray();
                 var str = new string(chars);
                 return str;
@@ -24,12 +24,11 @@ public class FileCreator
         if (File.Exists("./large_text_file.txt"))
         {
             File.Delete("./large_text_file.txt");
-            //return "large_text_file.txt";
         }
         await using var writer = File.AppendText("./large_text_file.txt");
         for (int i = 1; i <= rowCount; i++)
         {
-            await writer.WriteAsync(GenerateNumber() + " " + GenerateWord());
+            await writer.WriteLineAsync(GenerateNumber() + " " + GenerateWord());
 
             if (i % (rowCount / 10) == 0 && i != 0)
             {

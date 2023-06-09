@@ -25,3 +25,9 @@
     -- RAM sorting part files (500-700mb)
     -- RAM usage merge part file (600mb)
     -- time sorting (00:01:58.2744118)
+    
+### Use implicitly writer/reader files *20_000_000 rows in files by split 2_000_000*
+    -- RAM usage memory of separating (~500-700mb)
+    -- RAM sorting part files (~500-700mb)
+    -- RAM usage merge part file (~600mb)
+    -- time sorting (00:01:49.7488055)
