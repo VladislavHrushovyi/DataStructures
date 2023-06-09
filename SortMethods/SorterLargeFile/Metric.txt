@@ -31,3 +31,7 @@
     -- RAM sorting part files (~500-700mb)
     -- RAM usage merge part file (~600mb)
     -- time sorting (00:01:49.7488055)
+    
+### Case 20_000_000 rows, 500_000 separate
+    -- Max RAM (~185mb)
+    -- Time (00:01:01.2063102)

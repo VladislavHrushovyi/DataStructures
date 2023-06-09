@@ -50,7 +50,7 @@ public class SorterLargeFile
                     continue;
                 }
 
-                current.Line = new Line(current.Reader.ReadLine()!);
+                current.Line = new Line((await current.Reader.ReadLineAsync())!);
                 Reorder(lines);
 
                 if (logStep == 1_000_000)
@@ -101,7 +101,7 @@ public class SorterLargeFile
         var chunkItems = new Line[_chunkSize];
         using var reader = new StreamReader(_path);
         
-        for (string line = reader.ReadLine()!; ; line = reader.ReadLine()!)
+        for (string line = (await reader.ReadLineAsync())!; ; line = (await reader.ReadLineAsync())!)
         {
             chunkItems[i] = new Line(line);
             i++;

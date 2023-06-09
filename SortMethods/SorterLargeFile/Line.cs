@@ -10,7 +10,7 @@ public readonly struct Line : IComparable<Line>
     public Line(string line)
     {
         _line = line;
-        _pos = _line.IndexOf(" ");
+        _pos = _line.IndexOf(" ", StringComparison.Ordinal);
         Number = int.Parse(line.AsSpan(0, _pos));
     }
 
