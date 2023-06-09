@@ -1,39 +1,26 @@
 ﻿namespace SortMethods.SorterLargeFile;
 
-public struct Line : IComparable<Line>
+public readonly struct Line : IComparable<Line>
 {
-    public long Number { get; set; }
-    public string Data { get; set; }
-
-    public Line(string[] line)
+    private readonly string _line;
+    private readonly int _pos;
+    public long Number { get; }
+    public ReadOnlySpan<char> Word => _line.AsSpan(_pos + 1);
+    
+    public Line(string line)
     {
-        Number = long.Parse(line[0]);
-        Data = line[1];
+        _line = line;
+        _pos = _line.IndexOf(" ");
+        Number = int.Parse(line.AsSpan(0, _pos));
     }
 
-    public Line(string line) : this(line.Split(" "))
-    {
-    }
+    public string Build() => _line;
 
     public int CompareTo(Line other)
     {
-        int numberComparison = this.Number.CompareTo(other.Number);
+        int numberComparison = this.Word.CompareTo(other.Word, StringComparison.Ordinal);
         if (numberComparison != 0) return numberComparison;
 
-        return String.Compare(this.Data, other.Data, StringComparison.Ordinal);
+        return Number.CompareTo(other.Number);
     }
-
-    public override string ToString()
-    {
-        return Number + " " + Data;
-    }
-
-    // public int CompareTo(Line? other)
-    // {
-    //     if (ReferenceEquals(this, other)) return 0;
-    //     if (ReferenceEquals(null, other)) return 1;
-    //     var numberComparison = Number.CompareTo(other.Number);
-    //     if (numberComparison != 0) return numberComparison;
-    //     return string.Compare(Data, other.Data, StringComparison.Ordinal);
-    // }
 }

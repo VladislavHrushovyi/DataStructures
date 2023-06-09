@@ -1,18 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 
 namespace SortMethods.SorterLargeFile;
 
 public class FileCreator
 {
-    private readonly long _rowCount;
+    private readonly Random _rnd = new Random();
+    private readonly string[] words;
 
-    public FileCreator(long rowCount)
+    public FileCreator()
     {
-        _rowCount = rowCount;
+        words = Enumerable.Range(0, 10_000)
+            .Select(x =>
+            {
+                var range = Enumerable.Range(20, 100);
+                var chars = range.Select(_ => (char)_rnd.Next('A', 'Z')).ToArray();
+                var str = new string(chars);
+                return str;
+            }).ToArray();
     }
 
-    public async Task<string> CreateLargeFile()
+    public async Task<string> CreateLargeFile(long rowCount)
     {
         if (File.Exists("./large_text_file.txt"))
         {
@@ -20,16 +27,11 @@ public class FileCreator
             //return "large_text_file.txt";
         }
         await using var writer = File.AppendText("./large_text_file.txt");
-        for (int i = 1; i <= _rowCount; i++)
+        for (int i = 1; i <= rowCount; i++)
         {
-            var rndNumber = Random.Shared.Next(0, 10_000);
-            var rndChars = Enumerable.Range(10, Random.Shared.Next(10, 50))
-                .Select(_ => (char)Random.Shared.Next('A', 'Z' + 1)).ToImmutableArray();
-            var row = rndNumber + " " + string.Join("", rndChars) + "\n";
+            await writer.WriteAsync(GenerateNumber() + " " + GenerateWord());
 
-            await writer.WriteAsync(row);
-
-            if (i % (_rowCount / 10) == 0 && i != 0)
+            if (i % (rowCount / 10) == 0 && i != 0)
             {
                 Console.WriteLine(i + " lines was created");
             }
@@ -37,4 +39,7 @@ public class FileCreator
 
         return "large_text_file.txt";
     }
+
+    private string GenerateWord() => words[_rnd.Next(0, words.Length - 1)];
+    private string GenerateNumber() => _rnd.Next(0, 10_000).ToString();
 }

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using SortMethods.SorterLargeFile;
 
 var stopwatch = new Stopwatch();
-string pathFile = await new FileCreator(20_000_000).CreateLargeFile();
+string pathFile = await new FileCreator().CreateLargeFile(20_000_000);
 
 var sorterLargeFile = new SorterLargeFile(2_000_000, pathFile);
 

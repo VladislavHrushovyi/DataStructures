@@ -6,6 +6,6 @@ public class LineComparer : IComparer<Line>
     {
         var numberComparison = x.Number.CompareTo(y.Number);
         if (numberComparison != 0) return numberComparison;
-        return string.Compare(x.Data, y.Data, StringComparison.Ordinal);
+        return x.Word.CompareTo(y.Word, StringComparison.Ordinal);
     }
 }

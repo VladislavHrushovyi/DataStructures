@@ -1,4 +1,6 @@
-﻿namespace SortMethods.SorterLargeFile;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SortMethods.SorterLargeFile;
 
 public class SorterLargeFile
 {
@@ -42,7 +44,7 @@ public class SorterLargeFile
             while (lines.Count > 0)
             {
                 var current = lines.First();
-                await writerResult.WriteLineAsync(current.Line.ToString());
+                await writerResult.WriteLineAsync(current.Line.Build());
 
                 if (current.Reader!.EndOfStream)
                 {
@@ -50,7 +52,7 @@ public class SorterLargeFile
                     continue;
                 }
 
-                current.Line = new Line(await current.Reader.ReadLineAsync());
+                current.Line = new Line(current.Reader.ReadLine()!);
                 lines = Reorder(lines);
 
                 if (logStep == 1_000_000)
@@ -120,11 +122,9 @@ public class SorterLargeFile
     {
         foreach (var partFile in _partFiles)
         {
-            var lines = (await File.ReadAllLinesAsync(partFile)).Select(x => new Line(x))
-                .OrderBy(x => x)
-                .Select(x => x.ToString())
-                .ToArray();
-            await File.WriteAllLinesAsync(partFile, lines);
+            var lines = (await File.ReadAllLinesAsync(partFile)).Select(x => new Line(x)).ToArray();
+            Array.Sort(lines);
+            await File.WriteAllLinesAsync(partFile, lines.Select(x => x.Build()));
             Console.WriteLine(partFile + " sorted");
             Array.Clear(lines);
         }
