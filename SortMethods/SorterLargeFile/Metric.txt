@@ -35,3 +35,7 @@
 ### Case 20_000_000 rows, 500_000 separate
     -- Max RAM (~185mb)
     -- Time (00:01:01.2063102)
+    
+### Large case about 13gb  200_000_000 rows, 1_000_000 separate
+    -- Max RAM (~335mb)
+    -- Time (00:25:33.3135403)
