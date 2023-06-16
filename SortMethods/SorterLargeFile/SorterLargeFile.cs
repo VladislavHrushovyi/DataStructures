@@ -79,60 +79,26 @@ public class SorterLargeFile
 
     private void Reorder(List<LineState> lines)
     {
-        if (lines.Count == 1)
-        {
-            return;
-        }
-
-        int i = 0;
-        while (lines[i].Line.CompareTo(lines[i+1].Line) > 0 )
-        {
-            (lines[i], lines[i + 1]) = (lines[i + 1], lines[i]);
-            i++;
-            if (i + 1 == lines.Count)
-                return;
-        }
+        lines = lines.OrderBy(x => x.Line).ToList();
     }
 
     private async Task SeparateFile()
     {
         int countSepFiles = 0;
-        int i = 0;
-        var chunkItems = new Line[_chunkSize];
         using var reader = new StreamReader(_path);
-        
-        for (string line = (await reader.ReadLineAsync())!; ; line = (await reader.ReadLineAsync())!)
+
+        foreach (var part in reader.FileAsEnumerable().Chunk(_chunkSize))
         {
-            chunkItems[i] = new Line(line);
-            i++;
-
-            if (i == _chunkSize)
-            {
-                countSepFiles++;
-                var partNameFile = countSepFiles + ".txt";
-                _partFiles.Add(partNameFile);
-                    
-                Array.Sort(chunkItems);
-                Console.WriteLine(partNameFile + " was sorted");
-                    
-                WriteAllLines(partNameFile, chunkItems);
-                Console.WriteLine(partNameFile + " was created");
-                i = 0;
-            }
-
-            if (reader.EndOfStream)
-            {
-                break;
-            }
-        }
-
-        if (i != 0)
-        {
-            Array.Resize(ref chunkItems, i + 1);
+            var sortedPartLine = part.Select(x => new Line(x))
+                .OrderBy(x => x)
+                .ToArray();
+            
             countSepFiles++;
-            var partFileName = countSepFiles + ".txt";
-            _partFiles.Add(partFileName);
-            WriteAllLines(partFileName, chunkItems);
+            var partNameFile = countSepFiles + ".txt";
+            _partFiles.Add(partNameFile);
+            
+            WriteAllLines(partNameFile, sortedPartLine);
+            Console.WriteLine(partNameFile + " was created");
         }
     }
 
@@ -150,17 +116,5 @@ public class SorterLargeFile
         writer.Write(line.Number);
         writer.Write(" ");
         writer.WriteLine(line.Word);
-    }
-
-    private async Task SortPartFiles()
-    {
-        foreach (var partFile in _partFiles)
-        {
-            var lines = (await File.ReadAllLinesAsync(partFile)).Select(x => new Line(x)).ToArray();
-            Array.Sort(lines);
-            await File.WriteAllLinesAsync(partFile, lines.Select(x => x.Build()));
-            Console.WriteLine(partFile + " sorted");
-            Array.Clear(lines);
-        }
     }
 }
